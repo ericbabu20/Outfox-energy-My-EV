@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="en-GB" data-theme="night" style="--k:1;--breath:1">
+<html lang="en-GB" data-theme="day" style="--k:0;--breath:1">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>My EV tariff | Outfox Energy</title>
   <meta name="description" content="Affordable overnight charging with our My EV tariff.">
-  <!-- Night is the first paint. Preload it so the hero does not pop in late. -->
-  <link rel="preload" as="image" href="assets/my-ev-night.webp" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/outfox-logo-light.svg">
   <!--
     KITID: replace KITID with the Outfox Adobe Fonts kit id before launch.
     Brand type is Mundial — Demi Bold for headlines, Regular for body.
@@ -31,7 +30,7 @@
     @property --k {
       syntax: "<number>";
       inherits: true;
-      initial-value: 1;
+      initial-value: 0;
     }
     @property --breath {
       syntax: "<number>";
@@ -82,7 +81,7 @@
       --glass: color-mix(in srgb, rgba(255, 255, 255, 0.62) calc((1 - var(--k)) * 100%), rgba(0, 30, 40, 0.55));
       --font-display: "mundial", "Outfox Headline Fallback", "Arial Bold", Arial, sans-serif;
       --font-body: "mundial", "Outfox Body Fallback", Arial, sans-serif;
-      --header-h: 72px;
+      --header-h: 76px;
       /* Tune these to sit the pulse on the wall charger in the hero photo. */
       --charger-x: 90%;
       --charger-y: 63%;
@@ -174,11 +173,10 @@
       position: absolute;
       inset: 0;
       z-index: 0;
-      background: var(--header-bg);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: #5C16E6;
       pointer-events: none;
     }
+    .site-header :focus-visible { outline-color: #FFFFFF; }
     .bar {
       position: relative;
       z-index: 2;
@@ -202,8 +200,8 @@
       height: 32px;
       width: auto;
     }
-    .logo-day { opacity: calc(1 - var(--k)); }
-    .logo-night { opacity: var(--k); }
+    .logo-day { display: none; }
+    .logo-night { opacity: 1; }
 
     .primary {
       display: flex;
@@ -222,7 +220,7 @@
       border: 0;
       border-radius: 999px;
       background: transparent;
-      color: var(--ink);
+      color: #FFFFFF;
       text-decoration: none;
       cursor: pointer;
       font-size: 15px;
@@ -231,9 +229,44 @@
     .primary > li > a:hover,
     .nav-parent:hover,
     .has-sub.is-open > .nav-parent {
-      background: color-mix(in srgb, rgba(113, 0, 241, 0.12) calc((1 - var(--k)) * 100%), rgba(255, 255, 255, 0.12));
+      background: rgba(255, 255, 255, 0.14);
+    }
+    .nav-parent::after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      margin-left: 7px;
+      border-right: 1.6px solid currentColor;
+      border-bottom: 1.6px solid currentColor;
+      transform: translateY(-2px) rotate(45deg);
     }
     .has-sub { position: relative; }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: 18px;
+    }
+    .btn-quote,
+    .btn-signin {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn-quote { color: #FFFFFF; border: 1.5px solid #FFFFFF; background: transparent; }
+    .btn-quote:hover { background: rgba(255, 255, 255, 0.12); }
+    .btn-signin { color: #1A1030; background: #FFFFFF; }
+    .btn-signin:hover { background: #F3EEFF; }
+    .btn-quote:active,
+    .btn-signin:active { transform: scale(0.98); }
     .submenu {
       display: none;
       position: absolute;
@@ -265,7 +298,7 @@
       border: 0;
       border-radius: 12px;
       background: transparent;
-      color: var(--ink);
+      color: #FFFFFF;
       cursor: pointer;
       place-items: center;
     }
@@ -273,17 +306,34 @@
     .menu-btn[aria-expanded="true"] .icon-menu { display: none; }
     .menu-btn[aria-expanded="true"] .icon-close { display: block; }
 
-    /* ---------- Hero ---------- */
+    /* ---------- Hero ----------
+       Split layout: copy on the left, photo in a rounded frame on the right.
+       The source photos are 1024px wide, so they stay inside the frame instead
+       of being stretched across the viewport. */
     .hero {
+      background: var(--paper);
+      padding: clamp(36px, 5vw, 80px) 24px clamp(20px, 3vw, 40px);
+    }
+    .hero-grid {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 1.05fr);
+      grid-template-areas:
+        "copy photo"
+        "dock photo";
+      gap: 28px clamp(28px, 4vw, 64px);
+      align-items: center;
+    }
+    .hero-photo {
+      grid-area: photo;
       position: relative;
-      /* Pull the hero under the sticky header so the scene is a true 100svh. */
-      margin-top: calc(var(--header-h) * -1);
-      min-height: 100vh;
-      min-height: max(100svh, 600px);
-      display: flex;
-      flex-direction: column;
+      margin: 0;
+      aspect-ratio: 4 / 3;
+      border-radius: 28px;
       overflow: hidden;
       background: #001E28;
+      box-shadow: 0 22px 50px color-mix(in srgb, rgba(0, 30, 40, 0.14) calc((1 - var(--k)) * 100%), rgba(0, 0, 0, 0.45));
     }
     /* Scene crossfade is opacity = --k. No CSS transition — the theme module drives it.
        --breath scales 1 → 1.03 → 1 only while a switch is running. */
@@ -292,7 +342,7 @@
       inset: 0;
       z-index: 0;
       transform: scale(var(--breath));
-      transform-origin: 65% 60%;
+      transform-origin: 62% 58%;
     }
     html.is-switching .scene { will-change: transform; }
     .scene img {
@@ -301,7 +351,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: 65% 60%;
+      object-position: 62% 55%;
     }
     .scene-night { opacity: var(--k); }
 
@@ -310,8 +360,8 @@
       z-index: 1;
       left: var(--charger-x);
       top: var(--charger-y);
-      width: min(26vw, 280px);
-      height: min(26vw, 280px);
+      width: 42%;
+      height: 42%;
       transform: translate(-50%, -50%);
       pointer-events: none;
       opacity: var(--k);
@@ -356,52 +406,36 @@
       50% { opacity: 0.75; }
     }
 
-    .scrim {
-      position: absolute;
-      inset: 0;
-      z-index: 3;
-      pointer-events: none;
-      background:
-        linear-gradient(90deg, color-mix(in srgb, rgba(0, 30, 40, 0.55) calc(var(--k) * 100%), transparent) 0%, transparent 55%),
-        linear-gradient(90deg, color-mix(in srgb, rgba(255, 255, 255, 0.55) calc((1 - var(--k)) * 100%), transparent) 0%, transparent 55%);
-    }
+    .hero-copy { grid-area: copy; align-self: end; }
 
-    .hero-copy {
-      position: relative;
-      z-index: 4;
-      flex: 1 0 auto;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      width: min(560px, calc(100% - 40px));
-      margin-left: clamp(20px, 6vw, 96px);
-      padding-top: 108px;
-      padding-bottom: 230px;
+    .eyebrow {
+      display: inline-flex;
+      margin: 0 0 18px;
+      padding: 6px 12px;
+      border-radius: 99px;
+      background: color-mix(in srgb, rgba(113, 0, 241, 0.1) calc((1 - var(--k)) * 100%), rgba(185, 139, 255, 0.16));
+      color: var(--save);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
     }
-    html.cookie-dismissed .hero-copy { padding-bottom: 156px; }
 
     .hero-copy h1 {
       margin: 0;
       color: var(--ink);
-      font-size: clamp(40px, 5.2vw, 76px);
-      line-height: 1.02;
+      font-size: clamp(36px, 4.2vw, 60px);
+      line-height: 1.05;
       letter-spacing: -0.04em;
     }
     .hero-copy h1 .line { display: block; }
-    @media (min-width: 821px) {
-      .hero-copy h1 {
-        width: max-content;
-        max-width: min(920px, calc(100vw - 80px));
-      }
-      .hero-copy h1 .line { white-space: nowrap; }
-    }
     .save { color: var(--save); }
     .sub {
       margin-top: 18px;
-      max-width: 36em;
-      color: var(--ink);
-      font-size: 18px;
-      line-height: 1.5;
+      max-width: 34em;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.55;
     }
     .hero-copy .btn { margin-top: 28px; align-self: flex-start; }
 
@@ -428,17 +462,16 @@
     .btn-on-purple:hover { background: #F4EEFF; }
 
     .rate-dock {
-      position: absolute;
+      grid-area: dock;
+      position: relative;
       z-index: 5;
-      left: 50%;
-      bottom: 128px;
-      transform: translateX(-50%);
-      width: min(584px, calc(100% - 32px));
+      align-self: start;
+      width: 100%;
+      max-width: 560px;
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    html.cookie-dismissed .rate-dock { bottom: 28px; }
 
     .rate-group {
       flex: 1 1 auto;
@@ -543,12 +576,11 @@
     }
     .card {
       padding: 28px 26px 32px;
-      border-radius: 20px;
-      border: 1px solid var(--hairline);
-      background: var(--card);
-      box-shadow: 0 10px 28px color-mix(in srgb, rgba(0, 30, 40, 0.05) calc((1 - var(--k)) * 100%), rgba(0, 0, 0, 0.28));
+      border-radius: 22px;
+      border: 0;
+      background: #F4F0FF;
+      box-shadow: none;
     }
-    .card:hover { transform: translateY(-2px); }
     .card h3 {
       margin: 18px 0 8px;
       font-size: 22px;
@@ -734,12 +766,26 @@
     /* ---------- CTA band (always purple) ---------- */
     .cta-section { padding-top: 8px; }
     .cta-band {
-      background: #7100F1;
+      position: relative;
+      overflow: hidden;
+      background: #071820;
       color: #FFFFFF;
       border-radius: 28px;
-      padding: clamp(40px, 6vw, 72px) 28px;
+      padding: clamp(48px, 7vw, 80px) 28px;
       text-align: center;
     }
+    .cta-band::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -90px;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04);
+      pointer-events: none;
+    }
+    .cta-band .btn { position: relative; z-index: 1; }
     .cta-band h2 {
       color: #FFFFFF;
       margin: 0 auto 24px;
@@ -750,10 +796,11 @@
 
     /* ---------- Footer (always Outfox black — not themed) ---------- */
     .site-footer {
-      background: #001E28;
+      background: #7100F1;
       color: #FFFFFF;
-      padding: 64px 24px 28px;
+      padding: 56px 24px 28px;
     }
+    .foot-logo { display: block; height: 34px; width: auto; margin-bottom: 22px; }
     .foot-grid {
       max-width: 1120px;
       margin: 0 auto;
@@ -837,6 +884,114 @@
       cursor: pointer;
     }
 
+
+    /* Confirmed My EV layout. Header, hero and footer stay purple.
+       Page content stays on white so the rate labels stay readable. */
+    .bar {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+    }
+    .site-nav { display: contents; }
+    .primary { grid-column: 2; justify-self: center; }
+    .header-actions { grid-column: 3; }
+    .menu-btn { grid-column: 3; justify-self: end; }
+    .nav-parent[aria-current="page"] {
+      text-decoration: underline;
+      text-underline-offset: 6px;
+    }
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      min-height: 620px;
+      padding: 64px 24px 0;
+      background: linear-gradient(180deg, #5C16E6 0%, #4A10C8 46%, #2A0870 100%);
+      color: #FFFFFF;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero-copy {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .hero-copy h1 {
+      color: #FFFFFF;
+      font-size: clamp(36px, 4.6vw, 56px);
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+      text-wrap: balance;
+    }
+    .hero .sub {
+      margin: 18px auto 0;
+      max-width: 36em;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: 18px;
+    }
+    .hero .btn-primary {
+      margin-top: 28px;
+      min-height: 48px;
+      padding: 12px 28px;
+      background: #7C3AED;
+      color: #FFFFFF;
+    }
+    .hero .btn-primary:hover { background: #6D28D9; }
+    .hero .btn-primary:active { background: #5B21B6; transform: scale(0.98); }
+    .hero-art {
+      display: block;
+      width: min(1080px, 100%);
+      height: auto;
+      margin-top: 28px;
+    }
+    .benefits-grid { max-width: 1040px; margin: 0 auto; }
+    .card h3 { margin-top: 16px; }
+    .band-structure { position: relative; overflow: hidden; }
+    .band-structure::after {
+      content: "";
+      position: absolute;
+      right: -140px;
+      bottom: -200px;
+      width: 460px;
+      height: 460px;
+      border-radius: 50%;
+      background: #F3EEFF;
+      pointer-events: none;
+    }
+    .band-structure .wrap { position: relative; z-index: 1; }
+    .tariff-layout { display: block; max-width: 640px; }
+    .rate-rows { display: grid; gap: 14px; }
+    .rate-bar {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      min-height: 52px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #F7F4FF;
+      border: 1px solid #E7DEFF;
+    }
+    .rate-time,
+    .rate-name {
+      display: flex;
+      align-items: center;
+      padding: 0 22px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      font-size: 16px;
+    }
+    .rate-time {
+      color: #FFFFFF;
+      background: linear-gradient(90deg, #5B21B6 0%, #7C3AED 100%);
+    }
+    .rate-name { justify-content: flex-end; color: #7100F1; }
+    .cta-band .btn-primary { background: #7100F1; color: #FFFFFF; }
+    .cta-band .btn-primary:hover { background: #5C00C7; }
+    .cta-band .btn-primary:active { transform: scale(0.98); }
+
     /* ---------- Breakpoints: 1024, 820, 390 ---------- */
     @media (max-width: 1100px) {
       .foot-grid { grid-template-columns: 1fr 1fr; }
@@ -859,7 +1014,7 @@
         right: 0;
         bottom: 0;
         left: 0;
-        background: color-mix(in srgb, rgba(255, 255, 255, 0.94) calc((1 - var(--k)) * 100%), rgba(0, 30, 40, 0.94));
+        background: #FFFFFF;
         backdrop-filter: blur(18px);
         -webkit-backdrop-filter: blur(18px);
         overflow: auto;
@@ -890,15 +1045,19 @@
         border: 0;
         padding: 0 0 8px 8px;
       }
-      .scrim {
-        background:
-          linear-gradient(90deg, color-mix(in srgb, rgba(0, 30, 40, 0.62) calc(var(--k) * 100%), transparent) 0%, transparent 92%),
-          linear-gradient(90deg, color-mix(in srgb, rgba(255, 255, 255, 0.72) calc((1 - var(--k)) * 100%), transparent) 0%, transparent 92%);
+      .primary { grid-column: auto; justify-self: stretch; }
+      .header-actions {
+        grid-column: auto;
+        flex-direction: column;
+        align-items: stretch;
+        margin: 8px 24px 32px;
       }
-      .hero-copy { margin-left: 20px; width: calc(100% - 40px); }
-      .hero-copy .btn { width: 100%; }
-      .rate-dock { width: calc(100% - 24px); bottom: 176px; }
-      html.cookie-dismissed .rate-dock { bottom: 16px; }
+      .btn-quote { color: #7100F1; border-color: #7100F1; }
+      .primary > li > a,
+      .nav-parent { color: #001E28; }
+      .hero { min-height: 0; padding-top: 48px; }
+      .hero .btn-primary { width: auto; }
+      .rate-time, .rate-name { font-size: 14px; padding: 0 16px; }
       .benefits-grid { grid-template-columns: 1fr; }
       .tariff-layout { grid-template-columns: 1fr; }
       .clock-wrap { width: min(100%, 399px); margin-inline: auto; }
@@ -951,8 +1110,7 @@
   <header class="site-header">
     <div class="bar">
       <a class="logo" href="#">
-        <img class="logo-day" src="assets/outfox-logo.svg" width="225" height="39" alt="Outfox Energy">
-        <img class="logo-night" src="assets/outfox-logo-light.svg" width="225" height="39" alt="" aria-hidden="true">
+        <img src="assets/outfox-logo-light.svg?v=2" width="225" height="39" alt="Outfox Energy">
       </a>
       <button type="button" class="menu-btn" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
         <svg class="icon-menu" width="22" height="16" viewBox="0 0 22 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
@@ -972,87 +1130,91 @@
             </ul>
           </li>
           <li class="has-sub">
-            <button type="button" class="nav-parent" aria-expanded="false" aria-haspopup="true" aria-controls="tariffs-menu">Tariffs</button>
+            <button type="button" class="nav-parent" aria-expanded="false" aria-haspopup="true" aria-controls="tariffs-menu" aria-current="page">Tariffs</button>
             <ul id="tariffs-menu" class="submenu">
               <li><a href="#">[PLACEHOLDER]</a></li>
             </ul>
           </li>
-          <li><a href="#">Help Centre</a></li>
+          <li class="has-sub">
+            <button type="button" class="nav-parent" aria-expanded="false" aria-haspopup="true" aria-controls="help-menu">Help Centre</button>
+            <ul id="help-menu" class="submenu">
+              <li><a href="#">FAQs</a></li>
+              <li><a href="#">Contact Us</a></li>
+              <li><a href="#">Complaints</a></li>
+            </ul>
+          </li>
           <li><a href="#">Business Energy</a></li>
         </ul>
+        <div class="header-actions">
+          <a class="btn-quote" href="#">Quote Me</a>
+          <a class="btn-signin" href="#">Sign In</a>
+        </div>
       </nav>
     </div>
   </header>
 
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
-      <div class="scene">
-        <img class="scene-day" src="assets/my-ev-day.webp" width="1024" height="682" alt="An electric car charging on the driveway of a UK home during the day" aria-hidden="true">
-        <img class="scene-night" src="assets/my-ev-night.webp" width="1024" height="682" alt="An electric car charging overnight on a home driveway, the wall charger glowing purple" fetchpriority="high">
-      </div>
-      <div class="glow" aria-hidden="true"></div>
-      <div class="stars" aria-hidden="true">
-        <span></span><span></span><span></span><span></span><span></span><span></span>
-      </div>
-      <div class="scrim" aria-hidden="true"></div>
-
       <div class="hero-copy">
-        <h1 id="hero-title"><span class="line">Charge Smarter, <span class="save">Save More</span></span><span class="line">with Our EV Tariff</span></h1>
+        <h1 id="hero-title">Charge Smarter, Save More<br>with Our EV Tariff</h1>
         <p class="sub">Affordable overnight charging with our My EV tariff.</p>
-        <a class="btn btn-primary" href="#">[PLACEHOLDER — confirm CTA label, e.g. "Switch to My EV"]</a>
+        <a class="btn btn-primary" href="#">Switch to My EV Now</a>
       </div>
-
-      <div class="rate-dock">
-        <div class="rate-group" role="group" aria-label="Rate period">
-          <button type="button" class="rate-btn" data-period="offpeak" aria-pressed="true">
-            <span class="when">12:00 AM - 5:30 AM</span>
-            <span class="kind">Discounted Rate</span>
-          </button>
-          <button type="button" class="rate-btn" data-period="standard" aria-pressed="false">
-            <span class="when">5:30 AM - 12:00 AM</span>
-            <span class="kind">Standard Rate</span>
-          </button>
-        </div>
-        <div class="info-wrap">
-          <button type="button" class="info-btn" id="tou-info" aria-expanded="false" aria-controls="tou-note" aria-label="Off-peak times information">
-            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" fill="none">
-              <circle cx="9" cy="9" r="7.25" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M9 8.1V12.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-              <circle cx="9" cy="5.5" r="0.85" fill="currentColor"/>
-            </svg>
-          </button>
-          <div id="tou-note" class="popover" role="dialog" aria-label="Off-peak times" hidden>
-            <p>[PLACEHOLDER — approved UTC/BST off-peak times wording, from the ToU clock-change work]</p>
-            <button type="button" class="popover-close">Close</button>
-          </div>
-        </div>
-      </div>
+      <svg class="hero-art" viewBox="0 0 1200 300" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="battery-fill" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#6D4BFF"/>
+            <stop offset="0.55" stop-color="#D9D0FF"/>
+            <stop offset="1" stop-color="#7A5CFF"/>
+          </linearGradient>
+        </defs>
+        <ellipse cx="600" cy="286" rx="460" ry="18" fill="#12042E" opacity="0.35"/>
+        <g fill="#16083A">
+          <rect x="78" y="62" width="52" height="196" rx="12"/>
+          <rect x="146" y="98" width="44" height="160" rx="11" opacity="0.9"/>
+          <rect x="204" y="128" width="38" height="130" rx="10" opacity="0.75"/>
+        </g>
+        <circle cx="104" cy="98" r="15" fill="#241056" stroke="#B7A6FF" stroke-width="2"/>
+        <path d="M99 99l7-10-2.2 7.2H111l-8.2 12 2.2-7.2H99z" fill="#E4DCFF"/>
+        <circle cx="168" cy="128" r="11" fill="#241056" stroke="#B7A6FF" stroke-width="1.6"/>
+        <path d="M164 129l5-7-1.6 5h5l-6 8.4 1.6-5h-4z" fill="#E4DCFF"/>
+        <path d="M250 236c70-92 210-118 390-108 150 8 310 48 430 108l28 22H230l20-22z" fill="#100628"/>
+        <path d="M430 156c70-28 210-34 320 4" fill="none" stroke="#3C1C86" stroke-width="10" stroke-linecap="round"/>
+        <ellipse cx="430" cy="252" rx="72" ry="26" fill="#070314"/>
+        <ellipse cx="860" cy="250" rx="80" ry="28" fill="#070314"/>
+        <rect x="392" y="188" width="430" height="62" rx="31" fill="#140832" stroke="#8D78FF" stroke-width="3"/>
+        <rect x="408" y="200" width="318" height="38" rx="19" fill="url(#battery-fill)"/>
+        <circle cx="756" cy="219" r="9" fill="#F4F0FF" opacity="0.9"/>
+      </svg>
     </section>
 
     <section class="band" aria-labelledby="benefits-title">
       <div class="wrap">
-        <h2 id="benefits-title">Benefits</h2>
+        <h2 id="benefits-title" class="visually-hidden">Benefits</h2>
         <div class="benefits-grid">
           <article class="card">
-            <svg class="icon" width="28" height="28" viewBox="0 0 28 28" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="14" cy="14" r="10"/>
-              <path d="M14 8.5v9M10.5 14.5L14 18l3.5-3.5"/>
+            <svg class="icon" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 13.5c0-2.4 1.8-4 4-4s4 1.6 4 4c0 3.2-8 3.2-8 6.4 0 2 1.6 3.2 4 3.2s4-1.2 4-3.2"/>
+              <path d="M16 7.2V9M16 23v1.8"/>
+              <rect x="20.2" y="18.2" width="7.2" height="8" rx="1.4"/>
+              <path d="M22.2 18.2v-1.2a1.6 1.6 0 0 1 3.2 0v1.2M22.4 22.2h2.8"/>
             </svg>
             <h3>Cost Saving</h3>
             <p>Cut your charging costs with lower off-peak rates</p>
           </article>
           <article class="card">
-            <svg class="icon" width="28" height="28" viewBox="0 0 28 28" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M7 17c0-7 7.5-11 15-11-1 8-5 15-12 15-1.6 0-3-.6-3-4z"/>
-              <path d="M9 20c2.2-2.6 5-5.4 9.5-8"/>
+            <svg class="icon" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 26V16"/>
+              <path d="M16 18c0-5 3.2-8 7.2-8-1 5.2-3.4 8-7.2 8z"/>
+              <path d="M16 20c0-4.2-2.8-6.6-6.4-6.6.8 4.4 3 6.6 6.4 6.6z"/>
             </svg>
             <h3>Eco-Friendly</h3>
             <p>Support greener energy use by charging at night</p>
           </article>
           <article class="card">
-            <svg class="icon" width="28" height="28" viewBox="0 0 28 28" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="14" cy="15" r="6"/>
-              <path d="M14 12.2V15l2.2 1.4M9.2 8.2L7.4 6.2M18.8 8.2l1.8-2"/>
+            <svg class="icon" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="16" cy="16" r="10"/>
+              <path d="M17.2 9.5L12.4 17h3.2l-.8 5.5 4.8-7.5h-3.2l.8-5.5z"/>
             </svg>
             <h3>Convenient</h3>
             <p>Wake up to a fully charged EV every morning</p>
@@ -1061,57 +1223,19 @@
       </div>
     </section>
 
-    <section class="band" aria-labelledby="structure-title">
+    <section class="band band-structure" aria-labelledby="structure-title">
       <div class="wrap">
         <h2 id="structure-title">Tariff Structure</h2>
         <div class="tariff-layout" id="tariff-layout">
-          <div class="clock-wrap">
-            <!-- Decorative clock. The table below carries the same times for screen readers.
-                 The dot marks the current UK time only. It does not state which rate applies. -->
-            <svg class="clock clock-svg" viewBox="-64 -52 448 424" aria-hidden="true" focusable="false">
-              <circle class="track" cx="160" cy="160" r="146"/>
-              <g class="ticks">
-                <line class="tick" x1="160" y1="2" x2="160" y2="-12"/>
-                <line class="tick" x1="271.72" y1="48.28" x2="281.62" y2="38.38"/>
-                <line class="tick" x1="318" y1="160" x2="332" y2="160"/>
-                <line class="tick" x1="271.72" y1="271.72" x2="281.62" y2="281.62"/>
-                <line class="tick" x1="160" y1="318" x2="160" y2="332"/>
-                <line class="tick" x1="48.28" y1="271.72" x2="38.38" y2="281.62"/>
-                <line class="tick" x1="2" y1="160" x2="-12" y2="160"/>
-                <line class="tick" x1="48.28" y1="48.28" x2="38.38" y2="38.38"/>
-              </g>
-              <path class="arc arc-std" d="M305.03 143.22 A146 146 0 1 1 155.92 14.06"/>
-              <path class="arc arc-off" d="M164.08 14.06 A146 146 0 0 1 304.16 136.91"/>
-              <path class="hit" data-period="standard" d="M305.03 143.22 A146 146 0 1 1 155.92 14.06"/>
-              <path class="hit" data-period="offpeak" d="M164.08 14.06 A146 146 0 0 1 304.16 136.91"/>
-              <g class="moon" transform="translate(228.57 81.81)">
-                <path d="M4.2-6.2a6.6 6.6 0 1 0 0 12.4 5.4 5.4 0 1 1 0-12.4z" fill="#7100F1"/>
-              </g>
-              <g class="sun" transform="translate(91.43 238.19)" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-                <circle r="4"/>
-                <path d="M0-7.6v2.1M0 5.5v2.1M-7.6 0h2.1M5.5 0h2.1M-5.3-5.3l1.5 1.5M3.8-3.8l1.5-1.5M-5.3 5.3l1.5-1.5M3.8 3.8l1.5 1.5"/>
-              </g>
-              <text class="ring-label ring-label-off" x="168" y="118" text-anchor="middle">Discounted Rate</text>
-              <text class="ring-label" x="168" y="214" text-anchor="middle">Standard Rate</text>
-              <text class="hour-label" x="160" y="-30" text-anchor="middle">12 AM</text>
-              <text class="hour-label" x="352" y="164" text-anchor="middle">6 AM</text>
-              <text class="hour-label" x="160" y="354" text-anchor="middle">12 PM</text>
-              <text class="hour-label" x="-32" y="164" text-anchor="middle">6 PM</text>
-              <g id="now-marker">
-                <circle cx="160" cy="14" r="7.5" fill="#001E28"/>
-                <circle cx="160" cy="14" r="5.2" fill="#FFFFFF" stroke="#7100F1" stroke-width="2"/>
-              </g>
-            </svg>
-          </div>
           <div class="rate-rows">
-            <button type="button" class="rate-row" data-period="offpeak" aria-pressed="true">
-              <span class="when">12:00 AM - 5:30 AM</span>
-              <span class="name">Discounted Rate</span>
-            </button>
-            <button type="button" class="rate-row" data-period="standard" aria-pressed="false">
-              <span class="when">5:30 AM - 12:00 AM</span>
-              <span class="name">Standard Rate</span>
-            </button>
+            <div class="rate-bar">
+              <span class="rate-time">12:00 AM – 5:30 AM</span>
+              <span class="rate-name">Discounted Rate</span>
+            </div>
+            <div class="rate-bar">
+              <span class="rate-time">5:30 AM – 12:00 AM</span>
+              <span class="rate-name">Standard Rate</span>
+            </div>
           </div>
         </div>
         <table class="visually-hidden">
@@ -1124,11 +1248,11 @@
           </thead>
           <tbody>
             <tr>
-              <td>12:00 AM - 5:30 AM</td>
+              <td>12:00 AM – 5:30 AM</td>
               <td>Discounted Rate</td>
             </tr>
             <tr>
-              <td>5:30 AM - 12:00 AM</td>
+              <td>5:30 AM – 12:00 AM</td>
               <td>Standard Rate</td>
             </tr>
           </tbody>
@@ -1195,7 +1319,7 @@
       <div class="wrap">
         <div class="cta-band">
           <h2 id="cta-title">Ready to reduce your charging costs?</h2>
-          <a class="btn btn-on-purple" href="#">[PLACEHOLDER — confirm CTA label, e.g. "Switch to My EV"]</a>
+          <a class="btn btn-primary" href="#">Switch to My EV Now</a>
         </div>
       </div>
     </section>
@@ -1204,6 +1328,7 @@
   <footer class="site-footer">
     <div class="foot-grid">
       <div>
+        <img class="foot-logo" src="assets/outfox-logo-light.svg?v=2" width="225" height="39" alt="Outfox Energy">
         <h2>Follow us on social media</h2>
         <div class="socials">
           <a href="#" aria-label="[PLACEHOLDER] social link 1">
@@ -1475,8 +1600,9 @@
 
       /* Clock: draw-in, UK time marker (decorative), hover link with the rows. */
       const layout = document.getElementById("tariff-layout");
-      const clock = layout.querySelector(".clock");
+      const clock = layout ? layout.querySelector(".clock") : null;
       const marker = document.getElementById("now-marker");
+      if (clock && marker) {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
 
       function armDraw() {
@@ -1544,6 +1670,7 @@
         row.addEventListener("focus", on);
         row.addEventListener("blur", off);
       });
+      }
 
       /* Scroll-linked step line. Direct, not a CSS transition. */
       const steps = document.getElementById("how");
@@ -1564,6 +1691,7 @@
       /* Info popover — copy is a placeholder until UTC/BST wording is approved. */
       const infoBtn = document.getElementById("tou-info");
       const popover = document.getElementById("tou-note");
+      if (infoBtn && popover) {
       function closePopover() {
         popover.hidden = true;
         infoBtn.setAttribute("aria-expanded", "false");
@@ -1589,7 +1717,9 @@
         closePopover();
       });
 
-      /* Cookie notice. localStorage access is guarded — private mode must not throw. */
+      }
+
+            /* Cookie notice. localStorage access is guarded — private mode must not throw. */
       const cookie = document.getElementById("cookie");
       function dismissCookie() {
         document.documentElement.classList.add("cookie-dismissed");
